@@ -1,6 +1,7 @@
 package com.example.demo.option;
 
 import com.example.demo.product.Product;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +10,10 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name ="option_tb")
+@Table(name ="option_tb",
+        indexes = {
+            @Index(name = "option_product_id_index", columnList = "product_id")
+        })
 public class Option {
 
     @Id
@@ -28,4 +32,19 @@ public class Option {
 
     // 옵션 상품 수량
     private Long quantity;
+
+    @Builder
+    public Option(Long id, Product product, String optionName, Long price, Long quantity) {
+        this.id = id;
+        this.product = product;
+        this.optionName = optionName;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    public void updateFromDto(OptionResponse.FindAllDto optionDto) {
+        this.optionName = optionDto.getOptionName();
+        this.price = optionDto.getPrice();
+        this.quantity = optionDto.getQuantity();
+    }
 }

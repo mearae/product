@@ -24,10 +24,12 @@ public class ProductService {
         Pageable pageable = PageRequest.of(page, 3);
         Page<Product> productPage = productRepository.findAll(pageable);
 
-        List<ProductResponse.FindAllByIdDto> productResonses = productPage.getContent().stream().map(ProductResponse.FindAllByIdDto::new)
-                .collect(Collectors.toList());
+        List<ProductResponse.FindAllByIdDto> productDto =
+                productPage.getContent().stream()
+                        .map(ProductResponse.FindAllByIdDto::new)
+                        .collect(Collectors.toList());
 
-        return productResonses;
+        return productDto;
     }
 
     public ProductResponse.FindByIdDto findById(Long id) {

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Join Form</title>
+    <style>
+        body {
+            background-color: #222;
+            color: #fff;
+        }
+
+        h1 {
+            color: #fff;
+        }
+
+        .btn {
+            background-color: #444;
+            color: #fff;
+        }
+
+        .btn:hover {
+            background-color: #666;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 5px;
+        }
+
+        .form-container label {
+            margin-bottom: 10px;
+        }
+
+        .form-container input[type="email"],
+        .form-container input[type="password"],
+        .form-container input[type="text"] {
+            padding: 8px;
+            margin-bottom: 15px;
+            border: none;
+            background-color: #555;
+            color: #fff;
+        }
+
+        .form-container input[type="submit"] {
+            padding: 8px 12px;
+            border: none;
+            background-color: #444;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('joinForm');
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const name = document.getElementById('name').value;
+                const phoneNumber = document.getElementById('phoneNumber').value;
+                const access_token = "-";
+                const refresh_token = "-";
+                const platform = "user";
+
+                const data = {
+                    email,
+                    password,
+                    name,
+                    phoneNumber,
+                    access_token,
+                    refresh_token,
+                    platform
+                };
+
+                try {
+                    const response = await fetch('http://localhost:8080/user/join', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        alert("회원가입에 성공했습니다!");
+                        console.log(location.href);
+                        location.href = '/';
+                    } else {
+                        alert("Error: " + result.error.message);
+                    }
+
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+
+<h1>Join</h1>
+
+<div class="form-container">
+    <form id="joinForm">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="phoneNumber">PhoneNumber:</label>
+        <input type="text" id="phoneNumber" name="phoneNumber" required><br><br>
+
+        <input type="submit" value="회원가입 하시겠습니까?">
+    </form>
+    <form>
+        <div class="col">
+            <p>빠른 비밀번호 작성용</p>
+            <p>asdf1234!</p>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

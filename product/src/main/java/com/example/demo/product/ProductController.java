@@ -3,7 +3,6 @@ package com.example.demo.product;
 import com.example.demo.core.utils.ApiUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,21 +28,21 @@ public class ProductController {
         return ResponseEntity.ok(apiResult);
     }
 
-    @GetMapping("/product/delete/{id}")
+    @PostMapping("/product/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         productService.deleteById(id);
 
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/product/update/{id}")
+    @PostMapping("/product/update/{id}")
     public ResponseEntity<?> update(@ModelAttribute ProductResponse.FindByIdDto productDto) {
         productService.updateById(productDto);
 
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/product/save")
+    @PostMapping("/product/save")
     public ResponseEntity<?> save(@ModelAttribute ProductResponse.FindByIdDto productDto) {
         productService.save(productDto);
 

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Kakotalk Page Form</title>
+    <style>
+        body {
+            background-color: #222;
+            color: #fff;
+        }
+
+        h1 {
+            color: #fff;
+        }
+
+        .btn {
+            background-color: #444;
+            color: #fff;
+        }
+
+        .btn:hover {
+            background-color: #666;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 5px;
+        }
+
+        .form-container .col {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .form-container button {
+            padding: 8px 12px;
+            border: none;
+            background-color: #444;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        const paging = () => {
+            location.href = "/board/paging";
+        }
+
+        async function print_users() {
+              try {
+                  const response = await fetch('http://localhost:8080/user/users', {
+                      method: 'GET',
+                  });
+                  const result = await response.json();
+              } catch (error) {
+                  console.error('Error:', error);
+           }
+        }
+
+        async function logout() {
+            try {
+                const response = await fetch('http://localhost:8080/user/logout', {
+                   method: 'POST',
+                });
+                const result = await response.text();
+
+                alert("로그아웃에 성공했습니다!");
+                console.log(location.href);
+                location.href = result;
+            } catch (error) {
+               console.error('Error:', error);
+            }
+        }
+
+        async function fullLogout() {
+            try {
+                const response = await fetch('http://localhost:8080/kakao/fulllogout', {
+                   method: 'POST',
+                });
+                const result = await response.text();
+
+                alert("로그아웃에 성공했습니다!");
+                console.log(location.href);
+                location.href = result;
+            } catch (error) {
+               console.error('Error:', error);
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>Kakotalk Page</h1>
+
+<div class="form-container">
+    <div class="col">
+        <button class="btn btn-lg btn-secondary" onclick="print_users()">가입자들 출력</button>
+        <button type="button" class="btn btn-lg btn-secondary" onclick="location.href='/kakao/userlist'">카카오톡 사용자들 출력</button>
+    </div>
+    <div class="col">
+        <button class="btn btn-lg btn-secondary" onclick="logout()">로그아웃</button>
+        <button type="button" class="btn btn-lg btn-secondary" onclick="location.href='/kakao/fulllogout'">카카오 로그아웃</button>
+        <!--        <button type="button" class="btn btn-lg btn-secondary" onclick="location.href='http://localhost:8080/kakao/fulllogout'">카카오 로그아웃</button>-->
+    </div>
+    <div class="col">
+        <button onclick="paging()"> 게시판 </button>
+    </div>
+    <!--    <div class="col">-->
+    <!--        <a class="btn btn-lg btn-secondary" href="http://localhost:8080/kakao/disconnect">X 카카오와 연결 끊기</a>-->
+    <!--    </div>-->
+</div>
+</body>
+</html>
