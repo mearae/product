@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -41,7 +42,7 @@ public class OptionController {
     }
 
     @PostMapping("/products/{id}/option/save")
-    public ResponseEntity<?> save(@PathVariable Long id, @ModelAttribute OptionResponse.FindByProductIdDto optionDto){
+    public ResponseEntity<?> save(@PathVariable Long id, @RequestBody @Valid OptionResponse.FindByProductIdDto optionDto){
         Option option = optionService.save(id, optionDto);
 
         if (option != null){

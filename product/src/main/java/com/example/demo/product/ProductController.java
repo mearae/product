@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -36,14 +37,15 @@ public class ProductController {
     }
 
     @PostMapping("/product/update/{id}")
-    public ResponseEntity<?> update(@ModelAttribute ProductResponse.FindByIdDto productDto) {
-        productService.updateById(productDto);
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid ProductRequest.SaveDto productDto) {
+        productService.updateById(id, productDto);
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/product/save")
-    public ResponseEntity<?> save(@ModelAttribute ProductResponse.FindByIdDto productDto) {
+    public ResponseEntity<?> save(@RequestBody @Valid ProductRequest.SaveDto productDto) {
+        System.out.println(productDto.getProductName());
         productService.save(productDto);
 
         return ResponseEntity.ok().build();

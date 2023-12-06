@@ -5,6 +5,7 @@ import com.example.demo.product.Product;
 import com.example.demo.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +36,7 @@ public class OptionService {
         return findAllDtos;
     }
 
+    @Transactional
     public Option save(Long productId, OptionResponse.FindByProductIdDto optionDto) {
         Optional<Product> optionalProduct = productRepository.findById(productId);
         if (optionalProduct.isPresent()) {
@@ -53,10 +55,12 @@ public class OptionService {
         }
     }
 
+    @Transactional
     public void delete(Long id) {
         optionRepository.deleteById(id);
     }
 
+    @Transactional
     public void update(OptionResponse.FindAllDto optionDto) {
         Option option = optionRepository.findById(optionDto.getId()).orElseThrow(
                 () -> new Exception404("해당 옵션을 찾을 수 없습니다. : " + optionDto.getId()));

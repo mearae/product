@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor
+
 public class ProductResponse {
 
     @Setter
@@ -27,7 +27,7 @@ public class ProductResponse {
         private String image;
 
         // 가격
-        private int price;
+        private Long price;
 
         public FindAllByIdDto(Product product) {
             this.id = product.getId();
@@ -54,7 +54,7 @@ public class ProductResponse {
         private String image;
 
         // 가격
-        private int price;
+        private Long price;
 
         private List<OptionDto> optionList;
 
@@ -66,15 +66,6 @@ public class ProductResponse {
             this.price = product.getPrice();
             this.optionList = optionList.stream().map(OptionDto::new)
                     .collect(Collectors.toList());
-        }
-
-        public Product toEntity(){
-            return Product.builder()
-                    .productName(productName)
-                    .description(description)
-                    .image(image)
-                    .price(price)
-                    .build();
         }
     }
 

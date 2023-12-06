@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
@@ -44,18 +45,24 @@ public class ProductService {
 
     }
 
+    @Transactional
     public void deleteById(Long id) {
         productRepository.deleteById(id);
     }
 
-    public void updateById(ProductResponse.FindByIdDto productDto) {
-        Product product = productRepository.findById(productDto.getId()).orElseThrow(
-                () -> new Exception404("해당 상품을 찾을 수 없습니다. : " + productDto.getId()));
-
-        product.updateFromDto(productDto);
+    @Transactional
+    public void updateById(Long id, ProductRequest.SaveDto productDto) {
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isPresent()){
+            Product product = optionalProduct.get();
+            product.updateFromDto(productDto);
+        }
     }
 
-    public void save(ProductResponse.FindByIdDto productDto) {
+    @Transactional
+    public void save(ProductRequest.SaveDto productDto) {
+        System.out.println(productDto.getProductName());
         productRepository.save(productDto.toEntity());
     }
+
 }

@@ -7,10 +7,13 @@
         body {
             background-color: #222;
             color: #fff;
+            font-family: Arial, sans-serif;
         }
 
         h1 {
             color: #fff;
+            text-align: center;
+            margin-top: 40px;
         }
 
         .btn {
@@ -19,6 +22,7 @@
             background-color: #444;
             color: #fff;
             cursor: pointer;
+            margin-top: 10px;
         }
 
         .btn:hover {
@@ -28,11 +32,12 @@
         .form-container {
             display: flex;
             flex-direction: column;
-            max-width: 300px;
+            max-width: 30%;
             margin: 0 auto;
             padding: 20px;
             background-color: #333;
             border-radius: 5px;
+            margin-top: 40px;
         }
 
         .form-container label {
@@ -48,6 +53,10 @@
             color: #fff;
         }
 
+        #kakaoForm {
+            display: inline-flex;
+        }
+
         .form-container input[type="submit"],
         #loginForm button {
             padding: 8px 12px;
@@ -55,6 +64,8 @@
             background-color: #444;
             color: #fff;
             cursor: pointer;
+            margin-top: 10px;
+            margin-right: 10px;
         }
         #kakaoForm button {
             padding: 8px 12px;
@@ -67,6 +78,20 @@
 
         .form-container button[type="button"] {
             margin-top: 10px;
+            margin-right: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #888;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .foot-container {
+            display: inline-flex;
         }
     </style>
     <!-- 로그인 -->
@@ -122,31 +147,37 @@
 </head>
 <body>
 
-<h1>Login</h1>
-
 <div class="form-container">
-    <form id="loginForm">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
+    <header>
+        <h1>Welcome to My Website</h1>
+    </header>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
+    <div>
+        <form id="loginForm">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br><br>
 
-        <input type="submit" value="로그인">
-        <button type="button" onclick="location.href='/join'">회원가입</button>
-    </form>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
 
-    <form id="kakaoForm">
-        <div class="col">
-            <button type="button" class="btn btn-lg btn-secondary" onclick="location.href='/kakao/oauth'">카카오로 로그인하기</button>
-        </div>
-        <div class="col">
-            <button type="button" class="btn btn-lg btn-secondary" onclick="location.href='/kakao/relogin'">카카오로 다시 로그인하기</button>
-        </div>
-    </form>
-    <div class="col">
-        <button type="button" class="btn btn-lg btn-secondary" onclick="location.href='/kakao/end'">서버 종료</button>
+            <input type="submit" value="로그인">
+            <button type="button" onclick="location.href='/join'">회원가입</button>
+        </form>
+
+        <form id="kakaoForm">
+            <div class="col">
+                <button type="button" class="btn btn-lg btn-secondary" onclick="location.href='/kakao/oauth'">카카오로 로그인하기</button>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-lg btn-secondary" onclick="location.href='/kakao/relogin'">카카오로 다시 로그인하기</button>
+            </div>
+        </form>
+
     </div>
+    <footer>
+        <p>&copy; 2023 My Website. All rights reserved.</p>
+        <button type="button" class="btn btn-lg btn-secondary" onclick="location.href='/kakao/end'">서버 종료</button>
+    </footer>
 </div>
 
 </body>

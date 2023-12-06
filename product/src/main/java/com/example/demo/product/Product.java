@@ -31,13 +31,13 @@ public class Product {
     private String image;
 
     // 가격
-    private int price;
+    private Long price;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Option> options = new LinkedList<>();
 
     @Builder
-    public Product(Long id, String productName, String description, String image, int price, List<Option> options) {
+    public Product(Long id, String productName, String description, String image, Long price, List<Option> options) {
         this.id = id;
         this.productName = productName;
         this.description = description;
@@ -46,7 +46,7 @@ public class Product {
         this.options = options;
     }
 
-    public void updateFromDto(ProductResponse.FindByIdDto dto){
+    public void updateFromDto(ProductRequest.SaveDto dto){
         this.productName = dto.getProductName();
         this.description = dto.getDescription();
         this.image = dto.getImage();
