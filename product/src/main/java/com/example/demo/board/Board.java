@@ -73,9 +73,11 @@ public class Board {
         this.updateTime = LocalDateTime.now();
     }
 
+    // 연관관계 설정
     public void updateFromUser(User user){
         this.user = user;
     }
 
+    // 게시글 수정 시 이전의 파일들 전부 삭제
     public void clearFile(){this.boardFiles.clear();}
 }

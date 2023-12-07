@@ -19,7 +19,9 @@ public class CartResponse {
 
         public UpdateDto(List<Cart> dtoList) {
             this.dtoList = dtoList.stream().map(CartDto::new).collect(Collectors.toList());
-            this.totalPrice = totalPrice;
+            this.totalPrice = dtoList.stream()
+                    .mapToLong(cart -> cart.getOption().getPrice() * cart.getQuantity())
+                    .sum();
         }
 
         @Setter
@@ -45,6 +47,8 @@ public class CartResponse {
         }
     }
 
+    //  list                      list
+    // [products[id, productName, cartDtos[id, optionDto[id, optionName, price], price]], totalPricing]
     @Setter
     @Getter
     public static class FindAllDto {

@@ -28,8 +28,8 @@ public class KakaoService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final String restApi = "f12393a3d014f5b41c1891bca7f2c800";
-    private final String adminKey = "c1c3d919965c4c45df1da058b54a53f4";
+    private final String restApi = "restApi";
+    private final String adminKey = "adminKey";
 
     public String kakaoConnect(){
         try {
@@ -100,8 +100,7 @@ public class KakaoService {
 
             // 로그인한 클라이언트의 사용자 정보를 json 타입으로 획득
             User user = kakaoJoin(access_token);
-            user.setAccess_token(access_token);
-            user.setRefresh_token(refresh_token);
+            user.setToken(access_token, refresh_token);
             userRepository.save(user);
             return "http://localhost:8080/";
         } catch (Exception e){
@@ -169,8 +168,7 @@ public class KakaoService {
             headers.set("Content-Type", "application/x-www-form-urlencoded");
             headers.set("Authorization", "Bearer " + access_token);
             kakaoPost(requestUrl, headers, null);
-            user.setAccess_token(null);
-            user.setRefresh_token(null);
+            user.setToken(null, null);
             session.invalidate();
         }
         catch (Exception500 e){
@@ -188,8 +186,7 @@ public class KakaoService {
             String email = getUserFromKakao(access_token).getEmail();
             User user = userRepository.findByEmail(email).orElseThrow(
                     () -> new Exception401("로그인된 사용자를 찾을 수 없습니다."));
-            user.setAccess_token(null);
-            user.setRefresh_token(null);
+            user.setToken(null, null);
             session.invalidate();
             StringBuffer url = new StringBuffer();
             url.append("https://kauth.kakao.com/oauth/logout?");

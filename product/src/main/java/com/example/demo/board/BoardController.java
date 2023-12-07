@@ -18,23 +18,30 @@ import java.io.IOException;
 public class BoardController {
     private final BoardService boardService;
 
+    // 게시글 작성 화면으로 이동
     @GetMapping("/create")
     public String create(){
-        return "create";
+        return "boardCreate";
     }
 
+    // 선택한 게시글로 이동
     @GetMapping("/{id}")
     public String paging(@PathVariable Long id, Model model,
                          @PageableDefault(page = 1) Pageable pageable){
+        // 선택한 게시글 가져오기
         BoardDto dto = boardService.findById(id);
 
+        // 게시글 보기용
         model.addAttribute("board", dto);
+        // 목록으로 돌아가기용
         model.addAttribute("page", pageable.getPageNumber());
+        // 파일 다운로드용
         model.addAttribute("files", boardService.byBoardFiles(id));
 
-        return "detail";
+        return "BoardDetail";
     }
 
+    // 게시글 저장(단일 / 다중 파일)
     @PostMapping("/save")
     public String save(@ModelAttribute BoardDto boardDto,
                        @RequestParam MultipartFile[] files, HttpServletRequest req) throws IOException {
@@ -47,7 +54,7 @@ public class BoardController {
     public String updateForm(@PathVariable Long id, Model model){
         BoardDto dto = boardService.findById(id);
         model.addAttribute("board", dto);
-        return "update";
+        return "boardUpdate";
     }
 
     @PostMapping("/update")

@@ -31,7 +31,7 @@ public class CartController {
         return ResponseEntity.ok(apiResult);
     }
 
-    // 카트 전체 상품 확인
+    // 카트 업데이트
     @GetMapping("/carts/update")
     public ResponseEntity<?> update(
             @RequestBody @Valid List<CartRequest.UpdateDto> requestDto,

@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Index;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +22,14 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
+@Table(name = "cart_tb",
+        indexes = {
+            @Index(name = "cart_user_id_idx", columnList = "user_id"),
+            @Index(name = "cart_option_id_idx", columnList = "option_id"),
+        },
+        uniqueConstraints = {
+            @UniqueConstraint(name = "uk_cart_option_user", columnNames = {"user_id", "option_id"})
+        })
 public class CartService {
 
     private final CartRepository cartRepository;
@@ -34,7 +45,7 @@ public class CartService {
     @Transactional
     public void addCartList(List<CartRequest.SaveDto> requestDto, User user) {
 
-        // 동일한 상품 예외처리
+        // 동일한 상품 예외처리(중복 제거)
         Set<Long> optionId = new HashSet<>();
 
         for (CartRequest.SaveDto cart : requestDto){
@@ -61,7 +72,9 @@ public class CartService {
     public CartResponse.UpdateDto update(List<CartRequest.UpdateDto> requestDto, User user) {
         List<Cart> cartList = cartRepository.findAllByUserId(user.getId());
 
+        // 현 회원의 전체 카트 id
         List<Long> cartIds = cartList.stream().map(cart -> cart.getId()).collect(Collectors.toList());
+        // 요청 카트 id
         List<Long> requestIds = requestDto.stream().map(dto -> dto.getCartId()).collect(Collectors.toList());
 
         if (cartIds.size() == 0)

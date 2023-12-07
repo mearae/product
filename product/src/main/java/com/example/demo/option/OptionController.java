@@ -2,11 +2,8 @@ package com.example.demo.option;
 
 
 import com.example.demo.core.utils.ApiUtils;
-import com.example.demo.product.Product;
-import com.example.demo.product.ProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

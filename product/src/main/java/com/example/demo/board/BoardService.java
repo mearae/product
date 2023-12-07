@@ -47,8 +47,8 @@ public class BoardService {
         boardDto.setCreateTime(LocalDateTime.now());
         // 게시글 DB에 저장 후 PK 받아옴
         Long id = boardRepository.save(boardDto.toEntity()).getId();
-        Board board = boardRepository.findById(id).get();
-        board.updateFromUser(userService.getUserInfo(session));
+        Board board = boardRepository.findById(id).orElseThrow();
+        board.updateFromUser(userService.getCurrentUser(1L).toEntity());
 
         // 추가
         if (!files[0].isEmpty()) {
