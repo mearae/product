@@ -1,184 +1,214 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login Form</title>
+    <title>HomeShoppingTest</title>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <style>
+        /* 스타일 시트를 이용하여 홈페이지를 꾸미기 */
         body {
-            background-color: #222;
-            color: #fff;
+            margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
         }
 
-        h1 {
-            color: #fff;
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        .btn {
-            padding: 8px 12px;
-            border: none;
-            background-color: #444;
-            color: #fff;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .btn:hover {
-            background-color: #FFD500;
-        }
-
-        .form-container {
+        header {
             display: flex;
-            flex-direction: column;
-            max-width: 30%;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #333;
-            border-radius: 5px;
-            margin-top: 40px;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f0f0f0;
+            padding: 10px 20px;
         }
 
-        .form-container label {
-            margin-bottom: 10px;
+        .header-buttons {
+            display: flex;
+            align-items: center;
         }
 
-        .form-container input[type="email"],
-        .form-container input[type="password"] {
-            padding: 8px;
-            margin-bottom: 15px;
-            border: none;
-            background-color: #555;
-            color: #fff;
-        }
-
-        #kakaoForm {
-            display: inline-flex;
-        }
-
-        .form-container input[type="submit"],
-        #loginForm button {
-            padding: 8px 12px;
-            border: none;
-            background-color: #444;
-            color: #fff;
-            cursor: pointer;
-            margin-top: 10px;
+        .header-buttons button {
             margin-right: 10px;
-        }
-        #kakaoForm button {
-            padding: 8px 12px;
+            padding: 8px 16px;
+            background-color: #f0f0f0;
             border: none;
-            background-color: #FFEB00;
-            font-weight: 900;
-            color: #6C4900;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #333;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
 
-        .form-container button[type="button"] {
-            margin-top: 10px;
-            margin-right: 10px;
+        .header-buttons button:hover {
+            background-color: #45a049;
+        }
+
+        h1 {
+            margin: 20px 0;
+            text-align: center;
+            color: #333;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0 0 0 20px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        section {
+            margin: 20px 0;
+            padding: 0 20px;
         }
 
         footer {
-            text-align: center;
-            margin-top: 40px;
-            color: #888;
             display: flex;
+            background-color: #f0f0f0;
+            padding: 10px 20px;
+            text-align: center;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
         }
 
-        .foot-container {
-            display: inline-flex;
+        .btn {
+            flex: 0 0 auto;
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #fff;
+            line-height: 25px;
+            vertical-align: top;
+            background-color: #4CAF50;
+            font-weight: normal;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-secondary {
+
+        }
+
+        .btn-secondary:hover {
+            background-color: #45a049;
+        }
+
+        .footword{
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #999;
         }
     </style>
-    <!-- 로그인 -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('loginForm');
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
+    <script th:inline="javascript">
+        const paging = () => {
+            location.href = "/board/paging";
+        }
 
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                const name = "a";
-                const phoneNumber = "12312341234";
-                const access_token = "-";
-                const refresh_token = "-";
-                const platform = "user";
+        async function print_users() {
+              try {
+                  const response = await fetch('http://localhost:8080/user/users', {
+                      method: 'GET',
+                  });
+                  const result = await response.json();
+              } catch (error) {
+                  console.error('Error:', error);
+           }
+        }
 
-                const data = {
-                    email,
-                    password,
-                    name,
-                    phoneNumber,
-                    access_token,
-                    refresh_token,
-                    platform
-                };
-
-                try {
-                    const response = await fetch('http://localhost:8080/user/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    });
-                    const result = await response.json();
-
-                    if (result.success) {
-                        alert("로그인에 성공했습니다!");
-                        console.log(location.href);
-                        location.href = '/';
-                    } else {
-                        console.log(result)
-                        alert("아이디 또는 비밀번호를 잘못 입력했습니다.\n입력하신 내용을 다시 확인해주세요.");
+        async function logout() {
+            try {
+                const token = getCookie("token");
+                const platform = getCookie("platform");
+                console.log(token);
+                const response = await fetch('http://localhost:8080/user/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token,
+                        'Platform': platform
                     }
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            });
-        });
-    </script>
+                });
+                const result = await response.text();
+                console.log(result);
 
+                alert("로그아웃에 성공했습니다!");
+                console.log(location.href);
+                location.href = result;
+            } catch (error) {
+               console.error('Error:', error);
+            }
+        }
+
+        $(document).ready(function(){
+            checkButtonVisibility();
+        });
+
+        function getCookie(name) {
+            var cookieName = name + "=";
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.indexOf(cookieName) === 0) {
+                    return cookie.substring(cookieName.length, cookie.length);
+                }
+            }
+            return null;
+        }
+
+        const checkButtonVisibility = () => {
+            var logined = getCookie("token");
+            if (logined != null) {
+                // 버튼을 보여주는 로직 호출
+                showButtons();
+            }
+        }
+
+        const showButtons = () => {
+            // 버튼을 보여주는 로직 작성
+            var buttonsContainer = document.getElementById("loginButtons");
+            buttonsContainer.style.display = "none";
+            var buttonsContainer = document.getElementById("logoutButtons");
+            buttonsContainer.style.display = "block";
+        }
+    </script>
 </head>
 <body>
-
-<div class="form-container">
-    <header>
-        <h1>Welcome to My Website</h1>
-    </header>
+<header>
+    <h1 style="color: #333;">HomeShoppingTest</h1>
 
     <div>
-        <form id="loginForm">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required><br><br>
-
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required><br><br>
-
-            <input type="submit" value="로그인">
-            <button type="button" onclick="location.href='/join'">회원가입</button>
-        </form>
-
-        <form id="kakaoForm">
-            <div class="col">
-                <button type="button" class="btn btn-lg btn-secondary" onclick="location.href='/kakao/oauth'">카카오로 로그인하기</button>
-            </div>
-            <div class="col">
-                <button type="button" class="btn btn-lg btn-secondary" onclick="location.href='/kakao/relogin'">카카오로 다시 로그인하기</button>
-            </div>
-        </form>
-
+        <span class="header-buttons" id="loginButtons" style="display: block;">
+            <button class="btn btn-lg btn-secondary" onclick="location.href='/login'">로그인</button>
+            <button class="btn btn-lg btn-secondary" onclick="location.href='/join'">회원가입</button>
+        </span>
+        <span class="header-buttons" id="logoutButtons" style="display: none;">
+            <button class="btn btn-lg btn-secondary" onclick="logout()">로그아웃</button>
+        </span>
     </div>
-    <footer>
-        <p>&copy; 2023 My Website. All rights reserved.</p>
-        <button type="button" class="btn btn-lg btn-secondary" onclick="location.href='/kakao/end'">서버 종료</button>
-    </footer>
-</div>
+</header>
 
+<section>
+    <nav>
+        <button class="btn btn-lg btn-secondary" onclick="location.href='/product'">회원가입</button>
+        <button class="btn btn-lg btn-secondary" onclick="paging()">게시판</button>
+    </nav>
+</section>
+
+<section>
+    <h2>핵심 콘텐츠</h2>
+    <!-- 핵심 콘텐츠 내용 추가 -->
+</section>
+
+<section>
+    <h2>소셜 미디어 연동</h2>
+    <!-- 소셜 미디어 연동 내용 추가 -->
+</section>
+
+<footer>
+    <p class="footword">&copy; 2023 My Website. All rights reserved.</p>
+    <button type="button" class="btn btn-secondary" onclick="location.href='/kakao/end'">서버 종료</button>
+</footer>
 </body>
 </html>

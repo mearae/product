@@ -76,12 +76,32 @@
             pointer-events: none;
             color: #ccc;
         }
+
+        .btn {
+            flex: 0 0 auto;
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #fff;
+            line-height: 25px;
+            vertical-align: top;
+            background-color: #4CAF50;
+            font-weight: normal;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
 
 <table class="table">
-    <button onclick="create()"> 글쓰기 </button>
+    <button class="btn" onclick="create()"> 글쓰기 </button>
 
     <tr>
         <th>글 번호</th>

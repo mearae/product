@@ -19,7 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +64,7 @@ public class UserService {
 
     // id, 비밀번호 인증 후 access_token, refresh_token 생성
     @Transactional
-    public UserResponse.UserDto login(UserRequest.JoinDto joinDto, HttpSession session) {
+    public String login(UserRequest.JoinDto joinDto, HttpSession session, HttpServletResponse res) {
         // 인증 작업
         try{
             UsernamePasswordAuthenticationToken token
@@ -78,16 +79,32 @@ public class UserService {
 
             // 토큰 생성 및 저장
             User user = customUserDetails.getUser();
-            String access_token = JwtTokenProvider.create(user);
+            String noBearerToken = JwtTokenProvider.create(user).replace(JwtTokenProvider.TOKEN_PREFIX,"");
             String refreshToken = JwtTokenProvider.createRefresh(user);
-            user.setToken(access_token, refreshToken);
-            session.setAttribute("token", access_token);
+            user.setToken(noBearerToken, refreshToken);
 
-            User responseUser = userRepository.save(user);
-            return UserResponse.UserDto.toUserDto(responseUser);
+            setCookie(res, "token", noBearerToken);
+            setCookie(res, "platform", "user");
+            userRepository.save(user);
+
+            return noBearerToken;
         }catch (Exception e){
             throw new Exception401("인증되지 않음.");
         }
+    }
+
+    public void setCookie(HttpServletResponse res, String name, String value){
+        Cookie cookie = new Cookie(name, value);
+        cookie.setMaxAge(3600);
+        cookie.setPath("/");
+        res.addCookie(cookie);
+    }
+
+    public void deleteCookie(HttpServletResponse res, String name){
+        Cookie cookie = new Cookie(name, null);
+        cookie.setMaxAge(3600);
+        cookie.setPath("/");
+        res.addCookie(cookie);
     }
 
     // 이미 존재하는 이메일인지 확인
@@ -100,7 +117,7 @@ public class UserService {
 
     // 로그아웃
     @Transactional
-    public String logout(Long id, HttpSession session) {
+    public String logout(Long id, HttpServletResponse res) {
         try {
             User user = userRepository.findById(id).orElseThrow();
             // 카카오톡으로 로그인했을 경우
@@ -110,7 +127,8 @@ public class UserService {
             // 일반 회원으로 로그인했을 경우
             } else {
                 killToken(user);
-                session.invalidate();
+                deleteCookie(res, "token");
+                deleteCookie(res, "platform");
             }
             // 메인 화면으로
             return "/";
@@ -135,7 +153,7 @@ public class UserService {
 
     // 회원의 access_token 과 refresh_token 갱신
     @Transactional
-    public void refresh(Long id) {
+    public void refresh(Long id, HttpServletResponse res) {
         User user = userRepository.findById(id).orElseThrow();
         String refresh_token = user.getRefresh_token();
         DecodedJWT decodedJWT = JwtTokenProvider.verify(refresh_token);
@@ -152,11 +170,10 @@ public class UserService {
         long endTime = decodedJWT.getClaim("exp").asLong() * 1000;
         long diffDay = (endTime - System.currentTimeMillis()) / 1000 / 60 / 60 / 24;
         if (diffDay < 5) {
-            String new_refresh_token = JwtTokenProvider.createRefresh(user);
-            refreshUser.setToken(new_access_Token, new_refresh_token);
-        } else {
-            refreshUser.setToken(new_access_Token, refresh_token);
+            refresh_token = JwtTokenProvider.createRefresh(user);
         }
+        refreshUser.setToken(new_access_Token, refresh_token);
+        setCookie(res, "token", new_access_Token);
     }
 
     // 가입한 모든 회원들 출력
@@ -192,6 +209,4 @@ public class UserService {
             throw new Exception500(e.getMessage());
         }
     }
-
-
 }

@@ -1,25 +1,38 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Kakotalk Page Form</title>
     <style>
         body {
-            background-color: #222;
-            color: #fff;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
         }
 
         h1 {
-            color: #fff;
+            margin: 20px 0;
+            text-align: center;
         }
 
         .btn {
-            background-color: #444;
+            flex: 0 0 auto;
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 5px;
+            font-size: 13px;
             color: #fff;
+            line-height: 25px;
+            vertical-align: top;
+            background-color: #4CAF50;
+            font-weight: normal;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
 
         .btn:hover {
-            background-color: #666;
+            background-color: #45a049;
         }
 
         .form-container {
@@ -28,22 +41,24 @@
             max-width: 300px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #333;
+            background-color: #f0f0f0;
             border-radius: 5px;
         }
 
-        .form-container .col {
-            display: flex;
-            justify-content: space-between;
+        .form-container label {
+          font-weight: bold;
             margin-bottom: 10px;
         }
 
-        .form-container button {
-            padding: 8px 12px;
-            border: none;
-            background-color: #444;
-            color: #fff;
-            cursor: pointer;
+        .col {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .col p {
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #999;
         }
     </style>
     <script>
@@ -64,33 +79,10 @@
 
         async function logout() {
             try {
-                const token = sessionStorage.getItem('token');
+                var token = getCookie("token");
                 const response = await fetch('http://localhost:8080/user/logout', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': token
-                    }
-                });
-                const result = await response.json();
-
-                if (result.success) {
-                    alert("로그아웃에 성공했습니다!");
-                    console.log(location.href);
-                    location.href = result;
-                } else {
-                    console.log(result)
-                    alert("로그아웃 오류!");
-                }
-            } catch (error) {
-               console.error('Error:', error);
-            }
-        }
-
-        async function fullLogout() {
-            try {
-                const response = await fetch('http://localhost:8080/kakao/fulllogout', {
                    method: 'POST',
+                   Authorization : 'Bearer ' + token
                 });
                 const result = await response.text();
 
@@ -100,6 +92,18 @@
             } catch (error) {
                console.error('Error:', error);
             }
+        }
+
+        function getCookie(name) {
+            var cookieName = name + "=";
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.indexOf(cookieName) === 0) {
+                    return cookie.substring(cookieName.length, cookie.length);
+                }
+            }
+            return null;
         }
     </script>
 </head>
@@ -117,7 +121,7 @@
         <!--        <button type="button" class="btn btn-lg btn-secondary" onclick="location.href='http://localhost:8080/kakao/fulllogout'">카카오 로그아웃</button>-->
     </div>
     <div class="col">
-        <button onclick="paging()"> 게시판 </button>
+        <button class="btn btn-lg btn-secondary" onclick="paging()"> 게시판 </button>
     </div>
     <!--    <div class="col">-->
     <!--        <a class="btn btn-lg btn-secondary" href="http://localhost:8080/kakao/disconnect">X 카카오와 연결 끊기</a>-->

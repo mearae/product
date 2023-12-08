@@ -16,6 +16,7 @@ public class JwtTokenProvider {
     private static final Long REFRESH_EXP = 1000L * 60 * 60 * 24 * 60;
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER = "Authorization";
+    public static final String PLATFORM = "Platform";
     private static final String SECRET = "SECRET_KEY";
 
     // ** User 객체의 정보를 사용해 JWT 토큰을 생성하고 반환.

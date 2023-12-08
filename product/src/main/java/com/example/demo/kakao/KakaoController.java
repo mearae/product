@@ -1,7 +1,9 @@
 package com.example.demo.kakao;
 
+import com.example.demo.core.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,31 +41,34 @@ public class KakaoController {
     }
 
     @GetMapping(value = "/callback", produces = "application/json")
-    public String kakaoLogin(@RequestParam("code")String code, Error error, HttpServletRequest req, HttpServletResponse res) {
+    public String kakaoLogin(@RequestParam("code")String code, Error error,
+                             HttpServletResponse res) {
         // 로그인은 크롬 화면에서 하고 여기서 실제로는 토큰, 사용자 정보 얻기를 함
-        String link = kakaoService.kakaoLogin(code,req.getSession());
+        String link = kakaoService.kakaoLogin(code, res);
 
         // 다시 로그인 화면으로 돌아옴
         return "redirect:" + link;
     }
 
     @PostMapping("/logout")
-    public String kakaoLogout(HttpServletRequest req){
-        kakaoService.kakaoLogout(req.getSession());
+    public String kakaoLogout(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                              HttpServletResponse res) {
+        kakaoService.kakaoLogout(customUserDetails.getUser().getId(), res);
 
         return "/";
     }
 
     @GetMapping("/fulllogout")
-    public String kakaoFullLogout(HttpServletRequest req){
-        String link = kakaoService.kakaoFullLogout(req.getSession());
+    public String kakaoFullLogout(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                  HttpServletResponse res){
+        String link = kakaoService.kakaoFullLogout(customUserDetails.getUser().getId(), res);
 
         return "redirect:" + link;
     }
 
     @PostMapping("/disconnect")
-    public String kakaoDisconnect(HttpServletRequest req){
-        kakaoService.kakaoDisconnect(req.getSession());
+    public String kakaoDisconnect(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        kakaoService.kakaoDisconnect(customUserDetails.getUser().getId());
 
         return "index";
     }
