@@ -58,41 +58,28 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
             CustomUserDetails customUserDetails = null;
 
-            if (platform.equals("kakao")) {
-                JsonNode userInfo = getKakaoUserInfo(jwt);
-                String email = userInfo.path("kakao_account").path("email").asText();
+            // ** 토큰 검증
+            DecodedJWT decodedJWT = JwtTokenProvider.verify(jwt);
 
-                StringArrayConverter stringArrayConverter = new StringArrayConverter();
-                List<String> rolesList = stringArrayConverter.convertToEntityAttribute("ROLE_USER");
-
-                User user = User.builder()
-                        .email(email)
-                        .roles(rolesList)
-                        .build();
-                customUserDetails = new CustomUserDetails(user);
-            } else {
-                // ** 토큰 검증
-                DecodedJWT decodedJWT = JwtTokenProvider.verify(jwt);
-
-                if (Blacklist.isTokenBlacklisted(jwt)) {
-                    throw new Exception401("사용불가능한 토큰입니다.");
-                }
-
-                // ** 사용자 정보 추출
-                Long id = decodedJWT.getClaim("id").asLong();
-                String roles = decodedJWT.getClaim("roles").asString();
-
-                // ** 권한 정보를 문자열 리스트로 변환
-                StringArrayConverter stringArrayConverter = new StringArrayConverter();
-                List<String> rolesList = stringArrayConverter.convertToEntityAttribute(roles);
-
-                // ** 추출한 정보로 User를 생성
-                User user = User.builder()
-                        .id(id)
-                        .roles(rolesList)
-                        .build();
-                customUserDetails = new CustomUserDetails(user);
+            if (Blacklist.isTokenBlacklisted(jwt)) {
+                throw new Exception401("사용불가능한 토큰입니다.");
             }
+
+            // ** 사용자 정보 추출
+            Long id = decodedJWT.getClaim("id").asLong();
+            String roles = decodedJWT.getClaim("roles").asString();
+
+            // ** 권한 정보를 문자열 리스트로 변환
+            StringArrayConverter stringArrayConverter = new StringArrayConverter();
+            List<String> rolesList = stringArrayConverter.convertToEntityAttribute(roles);
+
+            // ** 추출한 정보로 User를 생성
+            User user = User.builder()
+                    .id(id)
+                    .roles(rolesList)
+                    .build();
+            customUserDetails = new CustomUserDetails(user);
+
 
             // ** Spring Security / 인증 정보를 관리하는데 사용
             Authentication authentication = new UsernamePasswordAuthenticationToken(
@@ -112,26 +99,6 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         } finally {
             // ** 필터로 응답을 넘긴다.
             chain.doFilter(request, response);
-        }
-    }
-
-    public JsonNode getKakaoUserInfo(String access_token) {
-        final String requestUrl = "https://kapi.kakao.com/v2/user/me";
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + access_token);
-        ResponseEntity<JsonNode> response = kakaoPost(requestUrl, headers, null);
-
-        return response.getBody();
-    }
-
-    public <T> ResponseEntity<JsonNode> kakaoPost(String requestUrl, HttpHeaders headers, T body){
-        try{
-            RestTemplate restTemplate = new RestTemplate();
-            HttpEntity<T> requestEntity = new HttpEntity<>(body, headers);
-
-            return restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity, JsonNode.class);
-        } catch (Exception e){
-            throw new Exception500(e.getMessage());
         }
     }
 }

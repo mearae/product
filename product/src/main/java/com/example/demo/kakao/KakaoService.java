@@ -19,7 +19,6 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -118,10 +117,22 @@ public class KakaoService {
             User user = kakaoJoin(access_token);
             user.setToken(access_token, refresh_token);
             userRepository.save(user);
+            saveUserId(user.getId(), access_token);
             return "http://localhost:8080/";
         } catch (Exception e){
             throw new Exception401("인증되지 않음.");
         }
+    }
+
+    public void saveUserId(Long id, String access_token){
+        final String requestUrl = "https://kapi.kakao.com/v1/user/update_profile";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + access_token);
+        headers.set("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+        parameters.add("properties", "{\"web_id\":\"" + id + "\"}");
+        kakaoPost(requestUrl, headers, parameters);
     }
 
     public boolean checkEmail(String email){
@@ -132,7 +143,7 @@ public class KakaoService {
 
     public User kakaoJoin(String access_token) {
         try {
-            User userInfo = getUserFromKakao(access_token);
+            User userInfo = makeUserFromKakao(access_token);
             String email = userInfo.getEmail();
             if (!checkEmail(email)) {
                 return userRepository.save(userInfo);
@@ -144,8 +155,8 @@ public class KakaoService {
         }
     }
 
-    public User getUserFromKakao(String access_token){
-        JsonNode userInfo = getKakaoUserInfo(access_token);
+    public User makeUserFromKakao(String access_token){
+        JsonNode userInfo = getKakaoUser(access_token);
         JsonNode kakao_account = userInfo.path("kakao_account");
         String encodedPassword = passwordEncoder.encode(access_token);
         JsonNode properties = userInfo.path("properties");
@@ -162,7 +173,7 @@ public class KakaoService {
         return user;
     }
 
-    public JsonNode getKakaoUserInfo(String access_token) {
+    public JsonNode getKakaoUser(String access_token) {
         final String requestUrl = "https://kapi.kakao.com/v2/user/me";
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + access_token);
@@ -279,20 +290,5 @@ public class KakaoService {
 
     public void endServer(){
         System.exit(0);
-    }
-
-    public void getTokenInfo(JsonNode access_token) {
-        try {
-            final String requestUrl = "https://kapi.kakao.com/v1/user/access_token_info";
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "Bearer " + access_token);
-            final ResponseEntity<JsonNode> response = userGet(requestUrl, headers, null);
-            if (response.getBody() == null) throw new Exception();
-            JsonNode token_info = response.getBody();
-            System.out.println(token_info.toPrettyString());
-        } catch (Exception e){
-            throw new Exception500(e.getMessage());
-        }
     }
 }

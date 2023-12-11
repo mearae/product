@@ -70,6 +70,10 @@ public class UserService {
             UsernamePasswordAuthenticationToken token
                     = new UsernamePasswordAuthenticationToken(
                     joinDto.getEmail(), joinDto.getPassword());
+
+            String pppp = passwordEncoder.encode("xF3+f~hPHlK.B5");
+            System.out.println(pppp);
+
             // anonymousUser = 비인증
             Authentication authentication
                     = authenticationManager.authenticate(token);
