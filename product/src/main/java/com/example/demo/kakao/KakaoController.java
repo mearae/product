@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RequiredArgsConstructor
@@ -41,7 +40,7 @@ public class KakaoController {
     }
 
     @GetMapping(value = "/callback", produces = "application/json")
-    public String kakaoLogin(@RequestParam("code")String code, Error error,
+    public String kakaoLogin(@RequestParam("code") String code, Error error,
                              HttpServletResponse res) {
         // 로그인은 크롬 화면에서 하고 여기서 실제로는 토큰, 사용자 정보 얻기를 함
         String link = kakaoService.kakaoLogin(code, res);
@@ -55,7 +54,7 @@ public class KakaoController {
                               HttpServletResponse res) {
         kakaoService.kakaoLogout(customUserDetails.getUser().getId(), res);
 
-        return "/";
+        return "index";
     }
 
     @GetMapping("/fulllogout")
@@ -77,7 +76,7 @@ public class KakaoController {
     public String kakaoDisconnect(){
         kakaoService.kakaoUserList();
 
-        return "logined";
+        return "index";
     }
 
     @GetMapping("/end")

@@ -108,7 +108,7 @@
 
         async function print_users() {
               try {
-                  const response = await fetch('http://localhost:8080/user/users', {
+                  const response = await fetch('/user/users', {
                       method: 'GET',
                   });
                   const result = await response.json();
@@ -122,7 +122,7 @@
                 const token = getCookie("token");
                 const platform = getCookie("platform");
                 console.log(token);
-                const response = await fetch('http://localhost:8080/user/logout', {
+                const response = await fetch('/user/logout', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

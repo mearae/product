@@ -9,7 +9,10 @@ import com.example.demo.core.security.JwtTokenProvider;
 import com.example.demo.kakao.KakaoService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,7 +24,6 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,7 +66,7 @@ public class UserService {
 
     // id, 비밀번호 인증 후 access_token, refresh_token 생성
     @Transactional
-    public String login(UserRequest.JoinDto joinDto, HttpSession session, HttpServletResponse res) {
+    public String login(UserRequest.JoinDto joinDto, HttpServletResponse res) {
         // 인증 작업
         try{
             UsernamePasswordAuthenticationToken token
@@ -126,7 +128,7 @@ public class UserService {
             User user = userRepository.findById(id).orElseThrow();
             // 카카오톡으로 로그인했을 경우
             if (user.getPlatform().equals("kakao")) {
-                //kakaoService.kakaoLogout(user);
+                kakaoService.kakaoLogout(id, res);
 
             // 일반 회원으로 로그인했을 경우
             } else {

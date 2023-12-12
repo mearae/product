@@ -2,9 +2,11 @@ package com.example.demo.kakao;
 
 import com.example.demo.core.error.exception.Exception401;
 import com.example.demo.core.error.exception.Exception500;
+import com.example.demo.user.StringArrayConverter;
 import com.example.demo.user.User;
 import com.example.demo.user.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
+import jdk.swing.interop.SwingInterOpUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -95,7 +97,7 @@ public class KakaoService {
 
     public void deleteCookie(HttpServletResponse res, String name){
         Cookie cookie = new Cookie(name, null);
-        cookie.setMaxAge(3600);
+        cookie.setMaxAge(0);
         cookie.setPath("/");
         res.addCookie(cookie);
     }
@@ -118,8 +120,9 @@ public class KakaoService {
             user.setToken(access_token, refresh_token);
             userRepository.save(user);
             saveUserId(user.getId(), access_token);
-            return "http://localhost:8080/";
+            return "/";
         } catch (Exception e){
+            System.out.println(e.getMessage());
             throw new Exception401("인증되지 않음.");
         }
     }
@@ -141,6 +144,7 @@ public class KakaoService {
         return users.isPresent();
     }
 
+    @Transactional
     public User kakaoJoin(String access_token) {
         try {
             User userInfo = makeUserFromKakao(access_token);
@@ -160,13 +164,14 @@ public class KakaoService {
         JsonNode kakao_account = userInfo.path("kakao_account");
         String encodedPassword = passwordEncoder.encode(access_token);
         JsonNode properties = userInfo.path("properties");
+        StringArrayConverter stringArrayConverter = new StringArrayConverter();
 
         User user = User.builder()
                 .email(kakao_account.path("email").asText())
                 .password(encodedPassword)
                 .name(properties.path("nickname").asText())
                 .phoneNumber("01012341234")
-                .roles(Collections.singletonList("ROLE_USER"))
+                .roles(stringArrayConverter.convertToEntityAttribute("ROLE_USER"))
                 .platform("kakao")
                 .build();
 
@@ -198,6 +203,7 @@ public class KakaoService {
             deleteCookie(res, "platform");
         }
         catch (Exception500 e){
+            System.out.println(e.getMessage());
             throw new Exception500("로그아웃 도중 오류 발생");
         }
         catch (Exception e){
@@ -208,8 +214,6 @@ public class KakaoService {
     @Transactional
     public String kakaoFullLogout(Long id, HttpServletResponse res) {
         try{
-
-
             User user = userRepository.findById(id).orElseThrow(
                     () -> new Exception401("로그인된 사용자를 찾을 수 없습니다."));
             user.setToken(null, null);
