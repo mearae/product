@@ -26,19 +26,24 @@
         }
 
         .header-buttons button {
+            flex: 0 0 auto;
             margin-right: 10px;
-            padding: 8px 16px;
+            padding: 4px 14px;
+            display: inline-block;
             background-color: #f0f0f0;
             border: none;
             border-radius: 4px;
             font-size: 14px;
+            font-weight: normal;
             color: #333;
             cursor: pointer;
+            line-height: 25px;
             transition: background-color 0.3s;
+            vertical-align: top;
         }
 
         .header-buttons button:hover {
-            background-color: #45a049;
+            background-color: #c7c7c7;
         }
 
         h1 {
@@ -87,11 +92,7 @@
             transition: background-color 0.3s;
         }
 
-        .btn-secondary {
-
-        }
-
-        .btn-secondary:hover {
+        .btn:hover {
             background-color: #45a049;
         }
 
@@ -180,19 +181,19 @@
 
     <div>
         <span class="header-buttons" id="loginButtons" style="display: block;">
-            <button class="btn btn-lg btn-secondary" onclick="location.href='/login'">로그인</button>
-            <button class="btn btn-lg btn-secondary" onclick="location.href='/join'">회원가입</button>
+            <button onclick="location.href='/login'">로그인</button>
+            <button onclick="location.href='/join'">회원가입</button>
         </span>
         <span class="header-buttons" id="logoutButtons" style="display: none;">
-            <button class="btn btn-lg btn-secondary" onclick="logout()">로그아웃</button>
+            <button onclick="logout()">로그아웃</button>
         </span>
     </div>
 </header>
 
 <section>
     <nav>
-        <button class="btn btn-lg btn-secondary" onclick="location.href='/product'">회원가입</button>
-        <button class="btn btn-lg btn-secondary" onclick="paging()">게시판</button>
+        <button class="btn" onclick="location.href='/product'">상품 페이지</button>
+        <button class="btn" onclick="paging()">게시판</button>
     </nav>
 </section>
 
@@ -208,7 +209,7 @@
 
 <footer>
     <p class="footword">&copy; 2023 My Website. All rights reserved.</p>
-    <button type="button" class="btn btn-secondary" onclick="location.href='/kakao/end'">서버 종료</button>
+    <button type="button" class="btn" onclick="location.href='/kakao/end'">서버 종료</button>
 </footer>
 </body>
 </html>

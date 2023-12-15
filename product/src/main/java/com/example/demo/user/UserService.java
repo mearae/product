@@ -108,7 +108,7 @@ public class UserService {
 
     public void deleteCookie(HttpServletResponse res, String name){
         Cookie cookie = new Cookie(name, null);
-        cookie.setMaxAge(3600);
+        cookie.setMaxAge(0);
         cookie.setPath("/");
         res.addCookie(cookie);
     }

@@ -1,9 +1,11 @@
 package com.example.demo.board;
 
+import com.example.demo.core.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -44,8 +46,9 @@ public class BoardController {
     // 게시글 저장(단일 / 다중 파일)
     @PostMapping("/save")
     public String save(@ModelAttribute BoardDto boardDto,
-                       @RequestParam MultipartFile[] files, HttpServletRequest req) throws IOException {
-        boardService.save(boardDto, files, req.getSession());
+                       @RequestParam MultipartFile[] files,
+                       @AuthenticationPrincipal CustomUserDetails customUserDetails) throws IOException {
+        boardService.save(boardDto, files, customUserDetails.getUser());
 
         return "redirect:/board/paging";
     }
@@ -77,7 +80,7 @@ public class BoardController {
 
         int blockLimit = 3;
         int startPage = (int)(Math.ceil((double)pageable.getPageNumber() / blockLimit) - 1) * blockLimit + 1;
-        int endPage = ((startPage + blockLimit - 1) < boards.getTotalPages()) ? (startPage + blockLimit - 1): boards.getTotalPages();
+        int endPage = Math.min((startPage + blockLimit - 1), boards.getTotalPages());
 
         model.addAttribute("boardList", boards);
         model.addAttribute("startPage", startPage);

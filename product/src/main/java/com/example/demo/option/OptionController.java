@@ -58,8 +58,8 @@ public class OptionController {
         return ResponseEntity.ok(apiResult);
     }
 
-    @PostMapping("/option/update/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @ModelAttribute OptionResponse.FindAllDto optionDto) {
+    @PostMapping("/option/update")
+    public ResponseEntity<?> update(@ModelAttribute OptionResponse.FindAllDto optionDto) {
         optionService.update(optionDto);
 
         ApiUtils.ApiResult<?> apiResult = ApiUtils.success(null);
