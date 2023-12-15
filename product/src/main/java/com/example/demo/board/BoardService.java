@@ -100,14 +100,14 @@ public class BoardService {
 
         fileRepository.deleteByBoard_id(board.getId());
         if (!files[0].isEmpty()) {
+            Path uploadPath = Paths.get(filePath);
+
+            // 만약 경로가 없다면... 경로 생성
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
             for (MultipartFile file : files) {
-                Path uploadPath = Paths.get(filePath);
-
-                // 만약 경로가 없다면... 경로 생성
-                if (!Files.exists(uploadPath)) {
-                    Files.createDirectories(uploadPath);
-                }
-
                 // 파일명 추출
                 String originalFilename = file.getOriginalFilename();
 

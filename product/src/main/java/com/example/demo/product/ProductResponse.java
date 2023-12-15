@@ -66,21 +66,23 @@ public class ProductResponse {
             this.optionList = optionList.stream().map(OptionDto::new)
                     .collect(Collectors.toList());
         }
-    }
 
-    @Setter
-    @Getter
-    public static class OptionDto{
-        private Long id;
-        private String optionName;
-        private Long price;
-        private Long quantity;
+        @Setter
+        @Getter
+        public static class OptionDto{
+            private Long id;
+            private String optionName;
+            private Long price;
+            private Long quantity;
 
-        public OptionDto(Option option){
-            this.id = option.getId();
-            this.optionName = option.getOptionName();
-            this.price = option.getPrice();
-            this.quantity = option.getQuantity();;
+            public OptionDto(Option option){
+                this.id = option.getId();
+                this.optionName = option.getOptionName();
+                this.price = option.getPrice();
+                this.quantity = option.getQuantity();;
+            }
         }
     }
+
+
 }

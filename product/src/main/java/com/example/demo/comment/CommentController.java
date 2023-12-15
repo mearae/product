@@ -42,10 +42,9 @@ public class CommentController {
         }
     }
 
-    @GetMapping("/comments")
-    public ResponseEntity<List<CommentDto>> commentList(@ModelAttribute BoardDto boardDto){
-        Long boardId = boardDto.getId();
-        List<CommentDto> comments = commentService.commentList(boardId);
+    @GetMapping("/comments/{id}")
+    public ResponseEntity<List<CommentDto>> commentList(@PathVariable Long id) {
+        List<CommentDto> comments = commentService.commentList(id);
 
         return ResponseEntity.ok().body(comments);
     }

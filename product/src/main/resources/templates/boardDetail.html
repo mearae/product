@@ -216,10 +216,7 @@
         const bId = [[${board.id}]];
         await $.ajax({
             type: "get",
-            url: "/comment/comments",
-            data: {
-                "id": bId
-            },
+            url: "/comment/comments" + bId,
             success: function (res) {
                 console.log("요청성공", res);
                 let output = "";
