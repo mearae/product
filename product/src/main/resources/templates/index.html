@@ -107,17 +107,6 @@
             location.href = "/board/paging";
         }
 
-        async function print_users() {
-              try {
-                  const response = await fetch('/user/users', {
-                      method: 'GET',
-                  });
-                  const result = await response.json();
-              } catch (error) {
-                  console.error('Error:', error);
-           }
-        }
-
         async function logout() {
             try {
                 const token = getCookie("token");
